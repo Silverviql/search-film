@@ -33,16 +33,13 @@ class Films extends Component {
         let updatedList = libraries.map(film => film.title)
         let tagList = libraries.map(film => film.tags)
         if(event != null){
-            console.log(updatedList)
             updatedList = updatedList.filter(function(item){
                 return item.toLowerCase().search(
                     event.target.value.toLowerCase()) !== -1;
             });
             this.setState({items: updatedList});
         }else{
-            console.log(tagList)
             tagList = tagList.filter(function(item){
-                console.log(item)
                 return item.toLowerCase().search(
                     tag.target.value.toLowerCase()) !== -1;
             });
