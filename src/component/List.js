@@ -14,11 +14,32 @@ class List extends Component {
 
     constructor(props) {
         super(props);
-        this.addMarker = this.addMarker.bind(this);
+        this.updateMarker = this.updateMarker.bind(this);
+    }
+
+    updateMarker(key, value) {
+        this.state.newItem = value
+        // update react state
+        this.setState({ [key]: value });
+
+        // update localStorage
+        localStorage.setItem(key, value);
+
+
+        if(this.state.list.length === 0){
+            this.addMarker()
+        }else{
+            if (!this.state.list.some(item => {
+                if (value === item.value) {
+                    this.deleteMarker(value);
+                    return true
+                } return false;})
+            ) this.addMarker()
+        }
     }
 
 
-    addMarker = (key, value) => {
+    addMarker = () => {
         // create a new item
         const newItem = {
             id: 1 + Math.random(),
@@ -31,7 +52,7 @@ class List extends Component {
         // add the new item to the list
         list.push(newItem);
 
-        // update state with new list, reset the new item marker
+        // update state with new list, reset the new item input
         this.setState({
             list,
             newItem: ""
@@ -41,25 +62,10 @@ class List extends Component {
         localStorage.setItem("list", JSON.stringify(list));
         localStorage.setItem("newItem", "");
 
-        list.forEach((item) => {
-            if(value === item.value){
-                console.log('повтор  удалять', item.value,  value)
-                this.updateMarker(item.value)
-            }else {
-                console.log('запись', item.value, '===', value)
-                this.updateMarker(key, value)
-            }
-        })
-
+        console.log('add',localStorage)
     }
 
-    updateMarker(key, value) {
-        // update react state
-        this.setState({ [key]: value });
-        // update localStorage
-        localStorage.setItem(key, value);
-        console.log('update',localStorage)
-    }
+
 
     deleteMarker(value) {
         // copy current list of items
@@ -68,6 +74,9 @@ class List extends Component {
         const updatedList = list.filter(item => item.value !== value);
 
         this.setState({ list: updatedList });
+
+        // update localStorage
+        localStorage.setItem("list", JSON.stringify(updatedList));
         console.log('delete',localStorage)
     }
 
@@ -78,7 +87,6 @@ class List extends Component {
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
         const currentTodos = items.slice(indexOfFirstTodo, indexOfLastTodo);
-
         return (
             <div>
             <ul className="list-group">
@@ -91,7 +99,7 @@ class List extends Component {
                                         <li className="list-group-item" data-category={item}>{item}</li>
                                     </div>
                                     <div className='col-lg-1'>
-                                         <button type="button" className="btn btn-dark"  onClick={e => this.addMarker('newItem', item)}>
+                                         <button type="button" className="btn btn-dark"  onClick={e => this.updateMarker("newItem", item)}>
                                              <FaStar />
                                          </button>
                                     </div>

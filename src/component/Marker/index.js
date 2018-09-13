@@ -8,21 +8,18 @@ class Marker extends Component {
 
     state = {};
 
-    deleteItem(id) {
+    deleteItem(id,marker) {
         // copy current list of items
-        const list = [...this.state.list];
+        const list = [...marker];
         // filter out the item being deleted
         const updatedList = list.filter(item => item.id !== id);
 
         this.setState({ list: updatedList });
+
+        localStorage.setItem("list", JSON.stringify(updatedList));
+
     }
 
-    deleteMarker = (key) => {
-        console.log(key)
-        console.log('удаляем заметку')
-        localStorage.removeItem(key);
-        console.log(localStorage)
-    }
 
     render() {
         let localValueMarker = localStorage.list;
@@ -37,7 +34,7 @@ class Marker extends Component {
                             <div className='container mt-2' key={marker.id}>
                                 <div className='row'>
                                     <div className='col-lg-12'>
-                                        <li className="list-group-item" data-category={marker.id} onClick={e => this.deleteMarker(marker.id)}>{marker.value} </li>
+                                        <li className="list-group-item" data-category={marker.id} onClick={e => this.deleteItem(marker.id,localValueMarker)}>{marker.value} </li>
                                     </div>
                                 </div>
                             </div>
